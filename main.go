@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"time"
 )
 
 func main() {
@@ -12,14 +13,17 @@ func main() {
 		panic(err)
 	}
 
-	conn, err := listener.Accept()
-	if err != nil {
-		panic(err)
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			panic(err)
+		}
+		go handle(conn)
 	}
-	handle(conn)
 }
 
 func handle(conn net.Conn) {
+	time.Sleep(time.Second * 5)
 	defer conn.Close()
 	buf := make([]byte, 1000)
 	n, err := conn.Read(buf)
