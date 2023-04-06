@@ -23,23 +23,32 @@ func main() {
 }
 
 func handle(conn net.Conn) {
-	time.Sleep(time.Second * 5)
 	defer conn.Close()
-	buf := make([]byte, 1000)
-	n, err := conn.Read(buf)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("request")
-	fmt.Println(string(buf[:n]))
+	for {
+		time.Sleep(time.Second * 3)
+		buf := make([]byte, 1000)
+		n, err := conn.Read(buf)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("request")
+		requestInfo := string(buf[:n])
+		fmt.Println(requestInfo)
 
-	responseData := "response"
-	responseByteData, err := json.Marshal(responseData)
-	if err != nil {
-		panic(err)
-	}
-	_, err = conn.Write(responseByteData)
-	if err != nil {
-		panic(err)
+		if requestInfo == `"close"` {
+			fmt.Println("close connection")
+			conn.Close()
+			return
+		}
+
+		responseData := "response"
+		responseByteData, err := json.Marshal(responseData)
+		if err != nil {
+			panic(err)
+		}
+		_, err = conn.Write(responseByteData)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
