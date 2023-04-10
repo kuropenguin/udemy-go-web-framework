@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -23,5 +24,12 @@ func GetStudent(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(responseData)
-	return
+}
+
+func ListenController(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "ListenController")
+}
+
+func UsersController(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "UsersController")
 }

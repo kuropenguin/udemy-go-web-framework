@@ -14,9 +14,14 @@ func (e *Engine) Run() {
 }
 
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.URL.Path)
-	if r.URL.Path == "/students" {
-		if r.Method == http.MethodGet {
+	if r.Method == http.MethodGet {
+		if r.URL.Path == "/users" {
+			controllers.UsersController(w, r)
+		}
+		if r.URL.Path == "/listen" {
+			controllers.ListenController(w, r)
+		}
+		if r.URL.Path == "/students" {
 			controllers.GetStudent(w, r)
 		}
 	}
