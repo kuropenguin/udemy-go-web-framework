@@ -1,7 +1,6 @@
 package framework
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/kuropenguin/udemy-go-web-framework/framework/controllers"
@@ -25,5 +24,4 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			controllers.GetStudent(w, r)
 		}
 	}
-	fmt.Fprintf(w, "hello")
 }
