@@ -1,12 +1,34 @@
 package framework
 
 import (
+	"errors"
 	"net/http"
-
-	"github.com/kuropenguin/udemy-go-web-framework/framework/controllers"
 )
 
-type Engine struct{}
+type Engine struct {
+	Router *Router
+}
+
+func NewEngine() *Engine {
+	return &Engine{
+		Router: &Router{},
+	}
+}
+
+type Router struct {
+	routingTable map[string]func(http.ResponseWriter, *http.Request)
+}
+
+func (r *Router) Get(path string, handler func(http.ResponseWriter, *http.Request)) error {
+	if r.routingTable == nil {
+		r.routingTable = make(map[string]func(http.ResponseWriter, *http.Request))
+	}
+	if r.routingTable[path] != nil {
+		return errors.New("exist path")
+	}
+	r.routingTable[path] = handler
+	return nil
+}
 
 func (e *Engine) Run() {
 	http.ListenAndServe("localhost:8080", e)
@@ -14,14 +36,13 @@ func (e *Engine) Run() {
 
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		if r.URL.Path == "/users" {
-			controllers.UsersController(w, r)
+		handler := e.Router.routingTable[r.URL.Path]
+		if handler == nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
-		if r.URL.Path == "/listen" {
-			controllers.ListenController(w, r)
-		}
-		if r.URL.Path == "/students" {
-			controllers.GetStudent(w, r)
-		}
+		handler(w, r)
+		return
 	}
+
 }
