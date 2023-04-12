@@ -1,7 +1,6 @@
 package framework
 
 import (
-	"errors"
 	"net/http"
 )
 
@@ -11,22 +10,18 @@ type Engine struct {
 
 func NewEngine() *Engine {
 	return &Engine{
-		Router: &Router{},
+		Router: &Router{
+			routingTable: Constructor(),
+		},
 	}
 }
 
 type Router struct {
-	routingTable map[string]func(http.ResponseWriter, *http.Request)
+	routingTable TreeNode
 }
 
 func (r *Router) Get(path string, handler func(http.ResponseWriter, *http.Request)) error {
-	if r.routingTable == nil {
-		r.routingTable = make(map[string]func(http.ResponseWriter, *http.Request))
-	}
-	if r.routingTable[path] != nil {
-		return errors.New("exist path")
-	}
-	r.routingTable[path] = handler
+	r.routingTable.Insert(path, handler)
 	return nil
 }
 
@@ -36,7 +31,8 @@ func (e *Engine) Run() {
 
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		handler := e.Router.routingTable[r.URL.Path]
+		pathname := r.URL.Path
+		handler := e.Router.routingTable.Search(pathname)
 		if handler == nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
