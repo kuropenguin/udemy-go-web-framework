@@ -2,6 +2,7 @@ package framework
 
 import (
 	"net/http"
+	"strings"
 )
 
 type Engine struct {
@@ -20,8 +21,13 @@ type Router struct {
 	routingTable TreeNode
 }
 
-func (r *Router) Get(path string, handler func(http.ResponseWriter, *http.Request)) error {
-	r.routingTable.Insert(path, handler)
+func (r *Router) Get(pathname string, handler func(http.ResponseWriter, *http.Request)) error {
+	pathname = strings.TrimSuffix(pathname, "/")
+	existedHandler := r.routingTable.Search(pathname)
+	if existedHandler != nil {
+		panic("path already existed")
+	}
+	r.routingTable.Insert(pathname, handler)
 	return nil
 }
 

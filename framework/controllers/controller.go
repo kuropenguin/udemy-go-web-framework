@@ -30,6 +30,10 @@ func ListenController(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "ListenController")
 }
 
+func ListItemController(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "list_item")
+}
+
 func UsersController(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "UsersController")
 }

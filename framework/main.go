@@ -10,6 +10,7 @@ func main() {
 	router := engin.Router
 	router.Get("/students", controllers.GetStudent)
 	router.Get("/lists", controllers.ListenController)
+	router.Get("/lists/:list_id", controllers.ListItemController)
 	router.Get("/users", controllers.UsersController)
 	engin.Run()
 }
