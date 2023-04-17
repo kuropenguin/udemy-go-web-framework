@@ -21,7 +21,7 @@ type Router struct {
 	routingTable TreeNode
 }
 
-func (r *Router) Get(pathname string, handler func(http.ResponseWriter, *http.Request)) error {
+func (r *Router) Get(pathname string, handler func(ctx *MyContext)) error {
 	pathname = strings.TrimSuffix(pathname, "/")
 	existedHandler := r.routingTable.Search(pathname)
 	if existedHandler != nil {
@@ -36,6 +36,7 @@ func (e *Engine) Run() {
 }
 
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	ctx := NewMyContext(w, r)
 	if r.Method == http.MethodGet {
 		pathname := r.URL.Path
 		handler := e.Router.routingTable.Search(pathname)
@@ -43,7 +44,7 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		handler(w, r)
+		handler(ctx)
 		return
 	}
 

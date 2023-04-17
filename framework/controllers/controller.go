@@ -1,39 +1,30 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
+	"github.com/kuropenguin/udemy-go-web-framework/framework/framework"
 )
 
 type StudentResponse struct {
 	Name string `json:"name"`
 }
 
-func GetStudent(w http.ResponseWriter, r *http.Request) {
+func GetStudent(ctx *framework.MyContext) {
 
-	queries := r.URL.Query()
-	name := queries.Get("name")
+	name := ctx.QueryKey("name", "default_name")
 	studentResponse := StudentResponse{
 		Name: name,
 	}
-
-	responseData, err := json.Marshal(studentResponse)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(responseData)
+	ctx.JSON(studentResponse)
 }
 
-func ListenController(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "ListenController")
+func ListController(ctx *framework.MyContext) {
+	ctx.WriteString("ListenController")
 }
 
-func ListItemController(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "list_item")
+func ListItemController(ctx *framework.MyContext) {
+	ctx.WriteString("list_item")
 }
 
-func UsersController(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "UsersController")
+func UsersController(ctx *framework.MyContext) {
+	ctx.WriteString("UsersController")
 }

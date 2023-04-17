@@ -1,13 +1,12 @@
 package framework
 
 import (
-	"net/http"
 	"strings"
 )
 
 type TreeNode struct {
 	children []*TreeNode
-	handler  func(w http.ResponseWriter, r *http.Request)
+	handler  func(ctx *MyContext)
 	param    string
 }
 
@@ -22,7 +21,7 @@ func isGeneral(param string) bool {
 	return strings.HasPrefix(param, ":")
 }
 
-func (t *TreeNode) Insert(pathname string, handler func(w http.ResponseWriter, r *http.Request)) {
+func (t *TreeNode) Insert(pathname string, handler func(ctx *MyContext)) {
 	node := t
 	params := strings.Split(pathname, "/")
 	for _, param := range params {
@@ -49,7 +48,7 @@ func (t *TreeNode) findChild(param string) *TreeNode {
 	return nil
 }
 
-func (t *TreeNode) Search(pathname string) func(w http.ResponseWriter, r *http.Request) {
+func (t *TreeNode) Search(pathname string) func(ctx *MyContext) {
 	params := strings.Split(pathname, "/")
 
 	result := dfs(t, params)
