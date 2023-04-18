@@ -82,3 +82,17 @@ func dfs(node *TreeNode, params []string) *TreeNode {
 	}
 	return nil
 }
+
+func (t *TreeNode) ParseParams(pathname string) map[string]string {
+	node := t
+	pathname = strings.TrimSuffix(pathname, "/")
+	paramArr := strings.Split(pathname, "/")
+	paramDicts := map[string]string{}
+	for i := len(paramArr) - 1; i >= 0; i-- {
+		if isGeneral(node.param) {
+			paramDicts[node.param] = paramArr[i]
+		}
+		node = node.parent
+	}
+	return paramDicts
+}

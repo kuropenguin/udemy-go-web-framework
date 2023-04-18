@@ -45,16 +45,8 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		node := targetNode
 
-		paramArr := strings.Split(pathname, "/")
-		paramDicts := make(map[string]string)
-		for i := len(paramArr) - 1; i >= 0; i-- {
-			if isGeneral(node.param) {
-				paramDicts[node.param] = paramArr[i]
-			}
-			node = node.parent
-		}
+		paramDicts := targetNode.ParseParams(pathname)
 
 		ctx.SetParams(paramDicts)
 		targetNode.handler(ctx)

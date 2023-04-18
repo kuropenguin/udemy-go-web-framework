@@ -55,3 +55,10 @@ func (ctx *MyContext) QueryKey(key string, defaultValue string) string {
 func (ctx *MyContext) SetParams(params map[string]string) {
 	ctx.params = params
 }
+
+func (ctx *MyContext) GetParam(key string, defaultValue string) string {
+	if target, ok := ctx.params[key]; ok {
+		return target
+	}
+	return defaultValue
+}
