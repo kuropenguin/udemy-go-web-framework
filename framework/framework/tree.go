@@ -8,6 +8,7 @@ type TreeNode struct {
 	children []*TreeNode
 	handler  func(ctx *MyContext)
 	param    string
+	parent   *TreeNode
 }
 
 func Constructor() TreeNode {
@@ -31,6 +32,7 @@ func (t *TreeNode) Insert(pathname string, handler func(ctx *MyContext)) {
 			child = &TreeNode{
 				param:    param,
 				children: []*TreeNode{},
+				parent:   node,
 			}
 			node.children = append(node.children, child)
 		}
@@ -48,16 +50,10 @@ func (t *TreeNode) findChild(param string) *TreeNode {
 	return nil
 }
 
-func (t *TreeNode) Search(pathname string) func(ctx *MyContext) {
+func (t *TreeNode) Search(pathname string) *TreeNode {
 	params := strings.Split(pathname, "/")
 
-	result := dfs(t, params)
-
-	if result == nil {
-		return nil
-	}
-	return result.handler
-
+	return dfs(t, params)
 }
 
 func dfs(node *TreeNode, params []string) *TreeNode {

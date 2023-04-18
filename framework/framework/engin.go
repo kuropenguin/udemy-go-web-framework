@@ -39,12 +39,24 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := NewMyContext(w, r)
 	if r.Method == http.MethodGet {
 		pathname := r.URL.Path
-		handler := e.Router.routingTable.Search(pathname)
-		if handler == nil {
+		targetNode := e.Router.routingTable.Search(pathname)
+
+		if targetNode == nil || targetNode.handler == nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		handler(ctx)
+		node := targetNode
+
+		paramArr := strings.Split(pathname, "/")
+		paramDicts := make(map[string]string)
+		for i := len(paramArr) - 1; i >= 0; i-- {
+			if isGeneral(node.param) {
+				paramDicts[node.param] = paramArr[i]
+			}
+			node = node.parent
+		}
+
+		targetNode.handler(ctx)
 		return
 	}
 
