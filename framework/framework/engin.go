@@ -56,6 +56,7 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			node = node.parent
 		}
 
+		ctx.SetParams(paramDicts)
 		targetNode.handler(ctx)
 		return
 	}
