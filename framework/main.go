@@ -13,5 +13,8 @@ func main() {
 	router.Get("/lists/:list_id", controllers.ListItemController)
 	router.Get("/lists/:list_id/pictures/:picture_id", controllers.ListItemPictureController)
 	router.Get("/users", controllers.UsersController)
+	router.Get("/post_page", controllers.PostPageController)
+
+	router.Post("/posts", controllers.PostController)
 	engin.Run()
 }

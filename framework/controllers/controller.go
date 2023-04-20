@@ -42,3 +42,20 @@ func ListItemPictureController(ctx *framework.MyContext) {
 		PictureID: pictureID,
 	})
 }
+
+func PostPageController(ctx *framework.MyContext) {
+	ctx.WriteString(`
+		<html>
+			<body>
+				<form action="/posts" method="post">
+					<input type="text" name="title" />
+					<input type="submit" />
+					</form>
+					</body>
+					</html>
+	`)
+}
+
+func PostController(ctx *framework.MyContext) {
+	ctx.WriteString("post")
+}
