@@ -1,6 +1,11 @@
 package controllers
 
 import (
+	"fmt"
+	"io/fs"
+	"io/ioutil"
+	"net/http"
+
 	"github.com/kuropenguin/udemy-go-web-framework/framework/framework"
 )
 
@@ -47,8 +52,10 @@ func PostPageController(ctx *framework.MyContext) {
 	ctx.WriteString(`
 		<html>
 			<body>
-				<form action="/posts" method="post">
+				<form action="/posts" method="post" enctype="multipart/form-data">
 					<input type="text" name="title" />
+					<input type="text" name="name" />
+					<input type="file" name="file" />
 					<input type="submit" />
 					</form>
 					</body>
@@ -57,5 +64,18 @@ func PostPageController(ctx *framework.MyContext) {
 }
 
 func PostController(ctx *framework.MyContext) {
+	name := ctx.FormKey("name", "default_name")
+	age := ctx.FormKey("age", "20")
+	fileInfo, err := ctx.FormFile("file")
+
+	if err != nil {
+		ctx.WriteHeader(http.StatusInternalServerError)
+	}
+
+	err = ioutil.WriteFile(fmt.Sprintf("%s_%s_%s", name, age, fileInfo.Filename), fileInfo.Data, fs.ModePerm)
+	if err != nil {
+		ctx.WriteHeader(http.StatusInternalServerError)
+	}
+
 	ctx.WriteString("post")
 }
